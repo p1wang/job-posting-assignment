@@ -27,19 +27,25 @@ export default function CreatePost({ posting, isUpdate, setShowEditForm }) {
   const navigate = useNavigate();
 
   const onSubmit = async (formData) => {
-    // console.log(formData.descriptionFile[0]);
+    console.log(formData);
     const binaryFileData = await convertToBinary(formData.descriptionFile[0]);
 
     isUpdate
       ? dispatch(
           updatePosting({
             id: posting.job_id,
-            updatedPosting: { ...formData, descriptionFile: binaryFileData },
+            updatedPosting: {
+              ...formData,
+              descriptionFile: new Int8Array(binaryFileData),
+            },
           })
         )
       : dispatch(
           createPosting({
-            newPosting: { ...formData, descriptionFile: binaryFileData },
+            newPosting: {
+              ...formData,
+              descriptionFile: new Int8Array(binaryFileData),
+            },
           })
         );
     reset();

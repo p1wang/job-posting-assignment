@@ -7,3 +7,4 @@ function convertToBinary(file) {
 }
 
 export default convertToBinary;
+

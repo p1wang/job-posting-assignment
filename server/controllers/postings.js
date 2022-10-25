@@ -190,7 +190,7 @@ export const updatePosting = async (req, res) => {
     descriptionFile,
   } = req.body;
 
-  console.log(req.body);
+  console.log({ ...descriptionFile });
 
   const jobCategoryId = jobCategoryMapper(jobCategory);
   const jobTypeId = jobTypeMapper(jobType);
@@ -198,49 +198,50 @@ export const updatePosting = async (req, res) => {
 
   try {
     const query = `UPDATE jobs
-    SET
-        category_id = ${jobCategoryId},
-        type_id = ${jobTypeId},
-        industry_id = ${industryId},
-        title = "${title}",
-        short_description = "${shortDescription}",
-        job_description = "${jobDescription}",
-        start_date = "${startDate}",
-        pay_rate = ${payRate}
-    WHERE
-        job_id = ${id};`;
+      SET
+          category_id = ${jobCategoryId},
+          type_id = ${jobTypeId},
+          industry_id = ${industryId},
+          title = "${title}",
+          short_description = "${shortDescription}",
+          job_description = "${jobDescription}",
+          description_file = "${descriptionFile}",
+          start_date = "${startDate}",
+          pay_rate = ${payRate}
+      WHERE
+          job_id = ${id};`;
 
     const values = [];
 
     await connection.execute(query, values);
 
     const resultsQuery = `SELECT
-        jobs.job_id,
-        jobs.company_id,
-        jobs.title,
-        jobs.short_description,
-        jobs.job_description,
-        jobs.start_date,
-        jobs.pay_rate,
-        companies.company_name,
-        companies.address,
-        companies.email,
-        companies.phone,
-        industries.industry,
-        job_categories.job_category,
-        job_types.job_type
-    FROM
-        jobs
-            LEFT JOIN
-        companies ON jobs.company_id = companies.company_id
-            LEFT JOIN
-        industries ON jobs.industry_id = industries.industry_id
-            LEFT JOIN
-        job_categories ON jobs.category_id = job_categories.category_id
-            LEFT JOIN
-        job_types ON jobs.type_id = job_types.type_id
-    WHERE
-        job_id = ${id};`;
+          jobs.job_id,
+          jobs.company_id,
+          jobs.title,
+          jobs.short_description,
+          jobs.job_description,
+          jobs.start_date,
+          jobs.pay_rate,
+          companies.company_name,
+          companies.address,
+          companies.email,
+          companies.phone,
+          industries.industry,
+          job_categories.job_category,
+          job_types.job_type
+      FROM
+          jobs
+              LEFT JOIN
+          companies ON jobs.company_id = companies.company_id
+              LEFT JOIN
+          industries ON jobs.industry_id = industries.industry_id
+              LEFT JOIN
+          job_categories ON jobs.category_id = job_categories.category_id
+              LEFT JOIN
+          job_types ON jobs.type_id = job_types.type_id
+      WHERE
+          job_id = ${id};`;
 
     const [results] = await connection.execute(resultsQuery, values);
 
